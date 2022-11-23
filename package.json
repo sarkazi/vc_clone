@@ -9,17 +9,17 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
     "dev": "nest start --watch",
+    "prestart:prod": "rimraf dist && npm run build",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main.ts",
+    "start": "node dist/src/main.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "heroku-postbuild": "echo Skip builds on Heroku"
+    "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -76,7 +76,7 @@
     "typescript": "^4.7.4"
   },
   "engines": {
-    "node": "18.x"
+    "node": "18.8.0"
   },
   "jest": {
     "moduleFileExtensions": [
