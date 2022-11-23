@@ -17,6 +17,8 @@ import { LikeCommentEntity } from './likes-comment/entities/likes-comment.entity
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { BookmarkEntity } from './bookmarks/entities/bookmark.entity';
 
+import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -39,6 +41,7 @@ import { BookmarkEntity } from './bookmarks/entities/bookmark.entity';
     MulterModule.register({
       dest: './static/',
     }),
+    ConfigModule.forRoot(),
     PostModule,
     CommentModule,
     UserModule,
