@@ -10,6 +10,11 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 
+import * as path from 'path';
+import * as fs from 'fs';
+import * as uuid from 'uuid';
+import { FileService } from 'src/file/file.service';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,6 +22,7 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(UserEntity)
     private repository: Repository<UserEntity>,
+    private fileService: FileService,
   ) {}
 
   //валидация

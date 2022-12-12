@@ -36,8 +36,7 @@ export class CommentEntity {
       nullable: true,
     },
   )
-  @JoinColumn({ name: 'likesCount' })
-  likesCount: number;
+  likesCount: LikeCommentEntity[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAd: Date;

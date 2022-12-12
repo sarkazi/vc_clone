@@ -15,7 +15,7 @@ export class PostService {
 
   //  Создание статьи
 
-  createPost(dto: CreatePostDto, userId: number, file: Express.Multer.File) {
+  createPost(dto: CreatePostDto, userId: number) {
     const firstParagraph = dto.body.find((obj) => obj.type === 'paragraph')
       ?.data?.text;
     return this.repository.save({
@@ -24,7 +24,6 @@ export class PostService {
       tags: dto.tags,
       description: firstParagraph || '',
       user: { id: userId },
-      file: file,
     });
   }
 
@@ -155,15 +154,16 @@ export class PostService {
     return this.repository.delete(id);
   }
 
-  //  Удаление всех статей
+  async getByUser(userId: number) {
+    const qb = await this.repository
+      .createQueryBuilder('p')
+      .leftJoin('p.user', 'user')
+      .leftJoin('p.likesCount', 'likesCount')
+      .loadRelationCountAndMap('p.likesCount', 'p.likesCount', 'likesCount')
+      .where('user.id = :userId', { userId })
+      .select(['p', 'user'])
+      .getMany();
 
-  async removeAll() {
-    return this.repository.clear();
-  }
-
-  //  Загрузка файла
-
-  async uploadFile(file: Express.Multer.File) {
-    return file;
+    return qb;
   }
 }

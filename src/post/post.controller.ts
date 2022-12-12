@@ -34,62 +34,43 @@ export class PostController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './static',
-        filename: editFileName,
-      }),
-    }),
-  )
-  create(
-    @UploadedFile() file: Express.Multer.File,
-    @User() userId: number,
-    @Body() dto: CreatePostDto,
-  ) {
-    return this.postService.createPost(dto, userId, file);
+  create(@User() userId: number, @Body() dto: CreatePostDto) {
+    return this.postService.createPost(dto, userId);
   }
+
   @Get()
   getAll() {
     return this.postService.getAll();
   }
+
   @Get('/search')
   search(@Query() query: SearchPostDto, @Req() req) {
     return this.postService.search(req.query);
   }
+
   @Get('/popular')
   getPopular() {
     return this.postService.getPopular();
   }
+
+  @Get('/by-user/:id')
+  getByUser(@Param('id') userId: string) {
+    return this.postService.getByUser(+userId);
+  }
+
   @Patch('/:id')
   updatePost(@Param('id') id: string, @Body() dto: CreatePostDto) {
     return this.postService.updatePost(+id, dto);
   }
+
   @Get('/:id')
   getOne(@Param('id') id: string) {
     return this.postService.getOne(+id);
   }
+
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   remove(@User() userId: number, @Param('id') id: string) {
     return this.postService.remove(+id, userId);
-  }
-  @Delete()
-  removeAll() {}
-
-  @Post('/upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './static',
-        filename: editFileName,
-      }),
-    }),
-  )
-  uploadFile(
-    @UploadedFile()
-    file: Express.Multer.File,
-  ) {
-    return this.postService.uploadFile(file);
   }
 }

@@ -26,7 +26,6 @@ export class PostEntity {
   description: string;
 
   @ManyToOne(() => UserEntity, { eager: true })
-  @JoinColumn({ name: 'user' })
   user: UserEntity;
 
   @Column('jsonb', { default: [{ text: null }] })

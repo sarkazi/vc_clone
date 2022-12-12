@@ -14,6 +14,7 @@ import {
   Res,
   CacheInterceptor,
   StreamableFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,7 +22,11 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { SearchUserDto } from './dto/search-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import {
+  AnyFilesInterceptor,
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName } from 'src/utils/file-upload';
 import { CondUserDto } from './dto/cond-user.dto';
@@ -64,21 +69,19 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Patch('/me')
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './static/avatars',
-        filename: editFileName,
-      }),
-    }),
+    FileFieldsInterceptor([
+      { name: 'cover', maxCount: 1 },
+      { name: 'avatar', maxCount: 1 },
+    ]),
   )
   updateMe(
     @Request() req,
-    @Res() res,
-    @Body() dto?,
-    @UploadedFile() file?: Express.Multer.File,
+    @Body() dto?: UpdateUserDto,
+    @UploadedFiles()
+    files?: { avatar?: Express.Multer.File[]; cover?: Express.Multer.File[] },
   ) {
-    console.log(file);
-    return this.userService.updateMe(req.user.id, file?.filename, dto);
+    console.log(dto, 777777);
+    return this.userService.updateMe(req.user.id, files, dto);
   }
 
   //  удаление всех пользователей

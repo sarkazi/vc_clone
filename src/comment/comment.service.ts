@@ -24,13 +24,22 @@ export class CommentService {
 
   async findAll(id: number) {
     const qb = this.repository.createQueryBuilder('c');
-    if (id) {
-      qb.where('c.post = :id', { id }).loadRelationCountAndMap(
-        'c.likesCount',
-        'c.likesCount',
-        'likesComment',
-      );
-    }
+
+    if (id)
+      return await qb
+
+        .leftJoin('c.post', 'post')
+        .leftJoin('c.likesCount', 'likesCount')
+        .where('post.id = :id', { id })
+        .select(['c.id', 'c.createdAd', 'text'])
+        .addSelect('COUNT(likesCount.id) as likesCount')
+        .groupBy('c.id')
+        .orderBy('likesCount', 'DESC')
+        .loadRelationCountAndMap('c.likesCount', 'c.likesCount', 'likesCount')
+        .getMany();
+
+    //  return await qb.getMany();
+
     const arr = await qb
       .leftJoinAndSelect('c.post', 'post')
       .leftJoinAndSelect('c.user', 'user')

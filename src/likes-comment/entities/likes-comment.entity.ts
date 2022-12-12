@@ -18,14 +18,11 @@ export class LikeCommentEntity {
   id: number;
 
   @ManyToOne(() => UserEntity, { eager: true })
-  @JoinColumn({ name: 'userId' })
   userId: UserEntity;
 
   @ManyToOne(() => PostEntity, { eager: true })
-  @JoinColumn({ name: 'postId' })
   postId: PostEntity;
 
-  @ManyToOne(() => CommentEntity, { eager: false })
-  @JoinColumn({ name: 'commentId' })
+  @ManyToOne(() => CommentEntity)
   commentId: CommentEntity;
 }

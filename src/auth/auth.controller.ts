@@ -5,8 +5,15 @@ import {
   Body,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
+import { Multer } from 'multer';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
@@ -27,6 +34,7 @@ export class AuthController {
 
   @Post('/register')
   register(@Body() dto: CreateUserDto) {
+    console.log(dto);
     return this.authService.register(dto);
   }
 }

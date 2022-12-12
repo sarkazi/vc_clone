@@ -18,6 +18,14 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { BookmarkEntity } from './bookmarks/entities/bookmark.entity';
 
 import { ConfigModule } from '@nestjs/config';
+import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { MessageModule } from './message/message.module';
+
+import * as path from 'path';
+import { MessageEntity } from './message/entities/message.entity';
+import { DialogModule } from './dialog/dialog.module';
+import { DialogEntity } from './dialog/entities/dialog.entity';
 
 @Module({
   imports: [
@@ -35,11 +43,13 @@ import { ConfigModule } from '@nestjs/config';
         LikePostEntity,
         LikeCommentEntity,
         BookmarkEntity,
+        MessageEntity,
+        DialogEntity,
       ],
       synchronize: true,
     }),
-    MulterModule.register({
-      dest: './static/',
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
     }),
     ConfigModule.forRoot(),
     PostModule,
@@ -49,6 +59,9 @@ import { ConfigModule } from '@nestjs/config';
     LikesPostModule,
     LikesCommentModule,
     BookmarksModule,
+    FileModule,
+    MessageModule,
+    DialogModule,
   ],
 
   controllers: [AppController],
